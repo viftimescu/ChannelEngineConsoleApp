@@ -46,11 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\GetDataController.cs" />
+    <Compile Include="Controllers\EditProductController.cs" />
+    <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\RankingController.cs" />
     <Compile Include="Data\ApiGetData.cs" />
     <Compile Include="Data\Billingaddress.cs" />
     <Compile Include="Data\Content.cs" />
+    <Compile Include="Data\Credentials.cs" />
     <Compile Include="Data\Extradata.cs" />
     <Compile Include="Data\Order.cs" />
     <Compile Include="Data\Line.cs" />

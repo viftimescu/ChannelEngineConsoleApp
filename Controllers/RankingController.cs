@@ -10,42 +10,10 @@ using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Controllers {
     internal class RankingController {
-        static string API_PATH = "https://api-dev.channelengine.net/api/";
-        static string API_KEY = "541b989ef78ccb1bad630ea5b85c6ebff9ca3322";
-        static string STATUS_IN_PROGRESS = "IN_PROGRESS";
+        static DataController dataController;
 
-        /// <summary>
-        /// Helper method that performs a GET request for all the orders in the API.
-        /// </summary>
-        /// <returns> A list of all the orders received from the API </returns>
-        static async Task<List<Order>> GetOrdersAsync() {
-            // get the HTTP response to the GET request
-            HttpResponseMessage response = await new GetDataController(API_PATH, API_KEY).GetRequest("v2/orders/");
-
-            List<Order> orders = null;
-            if (response.IsSuccessStatusCode) { // check if request was successful
-                string jsonString = await response.Content.ReadAsStringAsync();
-                var data = (JObject)JsonConvert.DeserializeObject(jsonString);
-                orders = data["Content"].ToObject<List<Order>>(); // retrieve the list of orders from the root object
-            }
-
-            return orders;
-        }
-
-        /// <summary>
-        /// Helper method that retrieves all the products from a list of orders.
-        /// </summary>
-        /// <param name="orders"> the list of orders </param>
-        /// <returns> A list of all the products in the list </returns>
-        static List<Line> GetProducts(List<Order> orders) {
-            // only retain the "IN_PROGRESS" orders
-            List<Order> inProgressOrders = orders.Where(o => o.Status == STATUS_IN_PROGRESS).ToList();
-
-            // get all the products from the orders
-            List<Line> products = new List<Line>();
-            inProgressOrders.ForEach(o => products.AddRange(o.Lines));
-
-            return products;
+        public RankingController(string apiPath, string apiKey) {
+            dataController = new DataController(apiPath, apiKey);
         }
 
         /// <summary>
@@ -53,7 +21,7 @@ namespace ChannelEngineConsoleApp.Controllers {
         /// </summary>
         /// <param name="products"> the list of products for which the ranking is computed </param>
         /// <returns> The top-5 ranking of the products in the list </returns>
-        static List<RankingProduct> GetTopFive(List<Line> products) {
+        List<RankingProduct> GetTopFiveHelp(List<Line> products) {
             // only retain the name, gtin and quantity of each product
             List<RankingProduct> rankingProducts = new List<RankingProduct>();
             products.ForEach(p => rankingProducts.Add(new RankingProduct(p.Description, p.Gtin, p.Quantity)));
@@ -67,14 +35,26 @@ namespace ChannelEngineConsoleApp.Controllers {
         }
 
         /// <summary>
+        /// Helper method that prints the result of the top-5 ranking to the screen.
+        /// </summary>
+        /// <param name="top5Products"> the ranking list </param>
+        static void OutputTopFive(List<RankingProduct> top5Products) {
+            Console.WriteLine("The top-5 most sold products are:");
+            for (int i = 0; i < Math.Min(5, top5Products.Count); ++i) {
+                RankingProduct product = top5Products[i];
+                Console.WriteLine((i + 1) + ". " + product.Name);
+            }
+            Console.WriteLine();
+        }
+
+        /// <summary>
         /// Method that performs the assignment task of computing the top-5 ranking.
         /// </summary>
         /// <returns> the top-5 ranking </returns>
-        public static async Task<List<RankingProduct>> GetRanking() {
-            List<Order> orders = await GetOrdersAsync(); // get all the orders 
-            List<Line> products = GetProducts(orders); // retrieve all products
-            List<RankingProduct> top5Products = GetTopFive(products); // compute top-5 ranking
-            return top5Products;
+        public async void GetRanking() {
+            List<Line> products = await dataController.GetInProgressProducts(); // retrieve all products
+            List<RankingProduct> top5Products = this.GetTopFiveHelp(products); // compute top-5 ranking
+            OutputTopFive(top5Products);
         }
     }
 }

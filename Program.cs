@@ -12,42 +12,39 @@ using ChannelEngineConsoleApp.Data;
 using ChannelEngineConsoleApp.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace ChannelEngineConsoleApp
 {
     internal class Program {
         static string API_PATH = "https://api-dev.channelengine.net/api/";
         static string API_KEY = "541b989ef78ccb1bad630ea5b85c6ebff9ca3322";
-        static string STATUS_IN_PROGRESS = "IN_PROGRESS";
 
         /// <summary>
-        /// Helper method that prints the result of the top-5 ranking to the screen.
+        /// Method that performs the top-5 task for the assignment.
+        /// Uses the helper methods of RankingController to compute top-5 ranking and item updating and ensures the console printing.
         /// </summary>
-        /// <param name="top5Products"> the ranking list </param>
-        static void OutputTopFive(List<RankingProduct> top5Products) {
-            Console.WriteLine("The top-5 most sold products are:");
-            for (int i = 0; i < Math.Min(5, top5Products.Count); ++i) {
-                RankingProduct product = top5Products[i];
-                Console.WriteLine((i + 1) + ". " + product.Name);
+        static async void RunTopFiveAsync() {
+            try {
+                new RankingController(API_PATH, API_KEY).GetRanking();
+            } catch (Exception e) { 
+                Console.WriteLine(e.Message);
             }
-            Console.WriteLine();
         }
 
         /// <summary>
-        /// Method that performs the task for the assignment.
-        /// Uses the helper methods to compute top-5 ranking and item updating and ensures the console printing.
+        /// Method that performs the stock update task of the assignment.
         /// </summary>
-        static async void RunTaskAsync() {
+        static async void RunUpdateProductAsync() {
             try {
-                List<RankingProduct> top5Products = await RankingController.GetRanking();
-                OutputTopFive(top5Products);
-            } catch (Exception e) { 
+                new EditProductController(API_PATH, API_KEY).ModifyProduct25(0);
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
         }
             
         static void Main(string[] args) {
-            RunTaskAsync(); // perform the assignment task
+            RunUpdateProductAsync(); // perform the assignment task
             Console.ReadKey();
             Environment.Exit(0);
             return;
