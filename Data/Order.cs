@@ -35,7 +35,7 @@ namespace ChannelEngineConsoleApp.Data {
         public float OriginalSubTotalExclVat { get; set; }
         public float OriginalShippingCostsExclVat { get; set; }
         public float OriginalTotalExclVat { get; set; }
-        public Product[] Products { get; set; }
+        public Line[] Lines { get; set; }
         public float ShippingCostsInclVat { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
