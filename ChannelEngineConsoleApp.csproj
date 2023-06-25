@@ -46,9 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\EditProductController.cs" />
+    <Compile Include="Controllers\ModifyStockTaskSolver.cs" />
     <Compile Include="Controllers\DataController.cs" />
-    <Compile Include="Controllers\RankingController.cs" />
+    <Compile Include="Controllers\ITaskSolver.cs" />
+    <Compile Include="Controllers\RankingTaskSolver.cs" />
     <Compile Include="Data\ApiGetData.cs" />
     <Compile Include="Data\Billingaddress.cs" />
     <Compile Include="Data\Content.cs" />

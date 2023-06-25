@@ -13,12 +13,15 @@ using ChannelEngineConsoleApp.Controllers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Reflection;
 
 namespace ChannelEngineConsoleApp
 {
     internal class Program {
         static string API_PATH = "https://api-dev.channelengine.net/api/";
         static string API_KEY = "541b989ef78ccb1bad630ea5b85c6ebff9ca3322";
+        static DataController dataController;
+        static ITaskSolver solver;
 
         /// <summary>
         /// Method that performs the top-5 task for the assignment.
@@ -26,7 +29,11 @@ namespace ChannelEngineConsoleApp
         /// </summary>
         static async void RunTopFiveAsync() {
             try {
-                new RankingController(API_PATH, API_KEY).GetRanking();
+                dataController = new DataController(API_PATH, API_KEY);
+
+                solver = new RankingTaskSolver(dataController);
+                solver.SolveTask();
+                solver.PrintOutput();
             } catch (Exception e) { 
                 Console.WriteLine(e.Message);
             }
@@ -37,14 +44,21 @@ namespace ChannelEngineConsoleApp
         /// </summary>
         static async void RunUpdateProductAsync() {
             try {
-                new EditProductController(API_PATH, API_KEY).ModifyProduct25(0);
+                dataController = new DataController(API_PATH, API_KEY);
+                // modify the first product in the list for ease of testing
+                List<Line> products = await dataController.GetInProgressProducts();
+
+                solver = new ModifyStockTaskSolver(
+                    products[0].MerchantProductNo, products[0].StockLocation.Id, 25, dataController);
+                await Task.Run(() => solver.SolveTask());
+                solver.PrintOutput();
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
         }
             
         static void Main(string[] args) {
-            RunUpdateProductAsync(); // perform the assignment task
+            RunTopFiveAsync(); // perform the assignment task
             Console.ReadKey();
             Environment.Exit(0);
             return;

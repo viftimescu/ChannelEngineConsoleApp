@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Security.Policy;
 
 namespace ChannelEngineConsoleApp.Controllers {
     internal class DataController {
@@ -45,13 +43,7 @@ namespace ChannelEngineConsoleApp.Controllers {
         /// <param name="content"> the content that should be delivered to the API </param>
         /// <returns> the HTTP response message of the POST request </returns>
         public async Task<HttpResponseMessage> PutRequest(string path, HttpContent httpContent) {
-            /*var request = new HttpRequestMessage(HttpMethod.Put, path + "?apikey=" + this.ApiKey);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            request.Content = new StringContent(jsonString, Encoding.UTF8);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json);
-
-            HttpResponseMessage response = await Client.PutAsync(path + "?apikey=" + this.ApiKey, content);*/
-            var response = await Client.PutAsync(path + "?apikey=" + this.ApiKey, httpContent);
+            HttpResponseMessage response = await Client.PutAsync(path + "?apikey=" + this.ApiKey, httpContent);
             return response;
         }
 
@@ -76,7 +68,6 @@ namespace ChannelEngineConsoleApp.Controllers {
         /// <summary>
         /// Method that retrieves all the products from a list of orders.
         /// </summary>
-        /// <param name="orders"> the list of orders </param>
         /// <returns> A list of all the products in the list </returns>
         public async Task<List<Line>> GetInProgressProducts() {
             List<Order> orders = await this.GetOrdersAsync();
