@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Data {
-    internal class ApiGetData {
+    public class ApiGetData {
         public Content Content { get; set; }
         public int Count { get; set; }
         public int TotalCount { get; set; }

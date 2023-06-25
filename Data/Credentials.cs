@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Data {
-    internal class Credentials {
+    public class Credentials {
         public string MerchantProductNo { get; set; }
 
         public Stocklocation Stocklocation { get; set; }

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Controllers {
-    internal class RankingTaskSolver : ITaskSolver {
+    public class RankingTaskSolver : ITaskSolver {
         DataController DataController;
-        List<RankingProduct> top5Products;
+        List<Line> Products;
+        public List<RankingProduct> RankingProducts;
+        public List<RankingProduct> Top5Products;
 
         /// <summary>
         /// Constructor for the RankingTaskSolver class.
@@ -15,7 +17,9 @@ namespace ChannelEngineConsoleApp.Controllers {
         /// <param name="dataController"> the DataController used for sending HTTP requests to the API </param>
         public RankingTaskSolver(DataController dataController) {
             this.DataController = dataController;
-            this.top5Products = new List<RankingProduct>();
+            this.Products = new List<Line>();
+            this.RankingProducts = new List<RankingProduct>();
+            this.Top5Products = new List<RankingProduct>();
         }
 
         /// <summary>
@@ -24,8 +28,8 @@ namespace ChannelEngineConsoleApp.Controllers {
         public async Task PrintOutput() {
             await Task.Run(() => SolveTask());
             Console.WriteLine("The top-5 most sold products are:");
-            for (int i = 0; i < Math.Min(5, this.top5Products.Count); ++i) {
-                RankingProduct product = this.top5Products[i];
+            for (int i = 0; i < Math.Min(5, this.Top5Products.Count); ++i) {
+                RankingProduct product = this.Top5Products[i];
                 Console.WriteLine((i + 1) + ". " + product.Name);
             }
             Console.WriteLine();
@@ -36,16 +40,17 @@ namespace ChannelEngineConsoleApp.Controllers {
         /// Method that performs the assignment task of computing the top-5 ranking.
         /// </summary>
         public async Task SolveTask() {
-            List<Line> products = await this.DataController.GetInProgressProducts();
-
-            // only retain the name, GTIN and quantity of each product
-            List<RankingProduct> rankingProducts = new List<RankingProduct>();
-            products.ForEach(p => rankingProducts.Add(new RankingProduct(p.Description, p.Gtin, p.Quantity)));
-
+            this.RankingProducts = await DataController.GetRankingProducts();
+            
             // compute the top-5 ranking
-            var groupedProducts = rankingProducts.GroupBy(p => p.Name)
-                                    .Select(g => new RankingProduct(g.First().Name, g.First().Gtin, g.Sum(p => p.Quantity)));
-            this.top5Products = groupedProducts.OrderByDescending(g => g.Quantity).Take(5).ToList();
+            var groupedProducts = this.RankingProducts.GroupBy(p => new { p.Name, p.Gtin })
+                                    .Select(g => new {
+                                        g.Key.Name,
+                                        g.Key.Gtin,
+                                        TotalQuantity = g.Sum(p => p.Quantity)
+                                    }).OrderByDescending(p => p.TotalQuantity).Take(5).ToList();
+            this.Top5Products = new List<RankingProduct>();
+            groupedProducts.ForEach(p => { this.Top5Products.Add(new RankingProduct(p.Name, p.Gtin, p.TotalQuantity)); });
         }
     }
 }

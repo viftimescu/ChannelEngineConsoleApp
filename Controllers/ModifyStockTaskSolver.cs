@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ChannelEngineConsoleApp.Controllers {
-    internal class ModifyStockTaskSolver : ITaskSolver {
+    public class ModifyStockTaskSolver : ITaskSolver {
         DataController DataController;
         JObject messageData;
 

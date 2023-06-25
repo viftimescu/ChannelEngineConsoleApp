@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Data {
-    internal class Stocklocation {
+    public class Stocklocation {
         public int Id { get; set; }
         public string Name { get; set; }
 

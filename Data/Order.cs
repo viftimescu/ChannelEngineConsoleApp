@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace ChannelEngineConsoleApp.Data {
-    internal class Order {
+    public class Order {
         public int Id { get; set; }
         public string ChannelName { get; set; }
         public int ChannelId { get; set; }

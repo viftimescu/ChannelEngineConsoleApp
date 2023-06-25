@@ -3,7 +3,7 @@ using System;
 
 namespace ChannelEngineConsoleApp
 {
-    internal class Line {
+    public class Line {
         public string Status { get; set; }
         public bool IsFulfillmentByMarketplace { get; set; }
         public string Gtin { get; set; }

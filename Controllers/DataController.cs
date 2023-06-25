@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 namespace ChannelEngineConsoleApp.Controllers {
-    internal class DataController {
+    public class DataController {
         private string BaseAddress {  get; set; }
         private string ApiKey { get; set; }
 
@@ -79,6 +79,24 @@ namespace ChannelEngineConsoleApp.Controllers {
             inProgressOrders.ForEach(o => products.AddRange(o.Lines));
 
             return products;
+        }
+
+        /// <summary>
+        /// Helper method for retrieving the list of products from the API.
+        /// </summary>
+        public async Task<List<Line>> GetProducts() {
+            return await this.GetInProgressProducts();
+        }
+
+        /// <summary>
+        /// Helper method for transforming the list of products to a list of RankingProducts.
+        /// </summary>
+        public virtual async Task<List<RankingProduct>> GetRankingProducts() {
+            List<Line> products = await GetProducts();
+            // only retain the name, GTIN and quantity of each
+            List<RankingProduct> rankingProducts = new List<RankingProduct>();
+            products.ForEach(p => rankingProducts.Add(new RankingProduct(p.Description, p.Gtin, p.Quantity)));
+            return rankingProducts;
         }
     }
 }

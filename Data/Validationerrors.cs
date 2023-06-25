@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ChannelEngineConsoleApp.Data {
-    internal class Validationerrors {
+    public class Validationerrors {
     }
 }

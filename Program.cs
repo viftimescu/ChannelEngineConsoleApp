@@ -31,9 +31,9 @@ namespace ChannelEngineConsoleApp
             try {
                 dataController = new DataController(API_PATH, API_KEY);
 
-                solver = new RankingTaskSolver(dataController);
-                solver.SolveTask();
-                solver.PrintOutput();
+                RankingTaskSolver solver = new RankingTaskSolver(dataController);
+                await solver.SolveTask();
+                await solver.PrintOutput();
             } catch (Exception e) { 
                 Console.WriteLine(e.Message);
             }
@@ -50,8 +50,9 @@ namespace ChannelEngineConsoleApp
 
                 solver = new ModifyStockTaskSolver(
                     products[0].MerchantProductNo, products[0].StockLocation.Id, 25, dataController);
-                await Task.Run(() => solver.SolveTask());
-                solver.PrintOutput();
+
+                await solver.SolveTask();
+                await solver.PrintOutput();
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
