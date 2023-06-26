@@ -59,7 +59,7 @@ namespace ChannelEngineConsoleApp
         }
             
         static void Main(string[] args) {
-            RunTopFiveAsync(); // perform the assignment task
+            RunUpdateProductAsync(); // perform the assignment task
             Console.ReadKey();
             Environment.Exit(0);
             return;
