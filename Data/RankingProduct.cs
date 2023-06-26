@@ -11,6 +11,8 @@ namespace ChannelEngineConsoleApp.Data {
         public string Gtin { get; set; }
         public int Quantity { get; set; }
 
+        public RankingProduct() { }
+
         public RankingProduct(string name, string gtin, int quantity) {
             this.Name = name;
             this.Gtin = gtin;
