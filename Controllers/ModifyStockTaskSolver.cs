@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace ChannelEngineConsoleApp.Controllers {
     public class ModifyStockTaskSolver : ITaskSolver {
         DataController DataController;
-        JObject messageData;
+        public JObject messageData;
 
         string MerchantProductNo;
         int StockLocationId;
